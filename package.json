@@ -7,6 +7,8 @@
     "build": "vue-tsc --noEmit && vite build",
     "build_test": "vue-tsc --noEmit && vite build --mode test",
     "build_public": "vue-tsc --noEmit && vite build --mode public",
+    "build_luckyswordfish": "vue-tsc --noEmit && vite build --mode luckyswordfish",
+    "build_nanhai": "vue-tsc --noEmit && vite build --mode nanhai",
     "preview": "vite preview",
     "localServer": "nodemon server/index.ts"
   },
