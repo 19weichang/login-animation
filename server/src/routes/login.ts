@@ -5,15 +5,20 @@ const UserInfo = {
   password: 'a12345'
 };
 
-// function Verify({ text_Id_value, text_Password_value }) {
-//   let { account, password } = UserInfo;
+function Verify(values:any) {
+  let { account, password } = UserInfo;
+  let {text_Id_value,text_Password_value} = values 
 
-//   return text_Id_value === account && text_Password_value === password;
-// };
+  return text_Id_value === account && text_Password_value === password;
+};
 
 // const Status = {
 //   isLogin: !false
 // };
+
+function oneOf(array:any) {
+  return array[Math.random() * array.length >> 0];
+};
 
 const Responses = [
   {
@@ -43,41 +48,47 @@ module.exports = {
     app.post('/login.do',(req:any, res:any) => {
      console.log('server',req.body);
      
-      // let isServerError = Math.random() > (0 || 0.96);
-     
-      // let sysCode = (isServerError
-      //   ? OneOf([9, 15, 500])
-      //   : Verify(req.body) ? 0 : 3
-      // );
-      // // let sysCode = 0
+      // let pass:boolean = Verify(req.body)
+      // console.log('canLoign?',pass);
       
-      // let { responseMessage } = Responses.find(response => {
-      //   return response.sysCode === sysCode;
-      // });
-      // Verify(req.body)
+      // let { sysCode, responseMessage } =  {
+      //   sysCode: 0,
+      //   responseMessage: "登入成功"
+      // };
 
-      let { sysCode, responseMessage } =  {
-        sysCode: 0,
-        responseMessage: 'DB query success!'
-      };
-      let responseData:Object
-      if (sysCode ===0 ) {
-        responseData = {  
-          "playId": 1,
-          "kioskId": 50,
-          "entityId": 'kkk',
-        }
-        console.log('responseData',responseData);
-      }
-    
-      
+      // let responseData:Object
+      // if (sysCode ===0 ) {
+      //   responseData = {  
+      //     "playId": 1,
+      //     "kioskId": 50,
+      //     "entityId": 'kkk',
+      //   }
+      //   console.log('responseData',responseData);
+      // }
+
+      // let { sysCode, responseMessage } = {
+      //   sysCode: 128,
+      //   responseMessage: 'This is the 128 error'
+      // };
+
+      let isServerError = Math.random() > (0 || 0.96);
+      let sysCode = (isServerError
+        ? oneOf(oneOf(['9', '15', '500']))
+        : Verify(req.body) ? 0 : 3
+      );
+      let message  = Responses.find(response => {
+        return response.sysCode === sysCode;
+      });
+      let responseMessage = message
+
       // Status.isLogin = sysCode === 0;
+      
       setTimeout(() => {
         res.json({
           sysCode,
           detail: {
             responseMessage,
-            responseData
+            // responseData
           }
         });
       }, Math.random() * 3 * 1000);

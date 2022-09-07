@@ -15,11 +15,22 @@ export const loginStore = defineStore({
         console.log(values);
         
         api.getlogin(values)
-          .then((data)=>{
+          .then((data:any)=>{
             console.log(data);
-            resolve(data)
+            let {sysCode, detail}  = data;
+            switch (sysCode) {
+              case 0: {
+                resolve(data);
+                break;
+              }
+              default: {
+                reject({ sysCode, message: detail.responseMessage });
+              }
+            }
           })
-          .catch(()=>{})
+          .catch((err)=>{
+            reject(err);
+          })
       })
     }
   }

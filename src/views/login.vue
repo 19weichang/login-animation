@@ -1,13 +1,10 @@
 <template>
   <div id="login">
+    <div class="title">
+      Ushow
+    </div>
+    <div class="trapezoid"></div>
     <div class="loginBox">
-      <div class="colTitle">
-        <!-- <div class="title">
-        Ushow
-        </div> -->
-        <div class="titleImg">
-        </div>
-      </div>
       <div class="colFrom">
         <a-form
           class="loginFrom"
@@ -45,39 +42,89 @@
               :disabled="loginLoading">Submit</button>
           </a-form-item>
         </a-form>
+
+        
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref,inject} from 'vue';
+import { onMounted,defineComponent, reactive, ref,inject} from 'vue';
 import { loginStore } from '../store/login'
 import { useRouter, useRoute } from "vue-router";
-import utils from '../cookie/utils'
+// import utils from '../cookie/utils'
+import { notification } from 'ant-design-vue';
+import type { NotificationPlacement } from 'ant-design-vue';
+import gsap from 'gsap'
 
 //  const cookies:any = useCookies();
 
 interface FormState {
   text_Id_value: string;
   text_Password_value: string;
-  remember: boolean;
+  // remember: boolean;
 }
 export default defineComponent({
   setup() {
     const formState = reactive<FormState>({
       text_Id_value: '',
       text_Password_value: '',
-      remember: true,
+      // remember: true,
     });
+
+    //Trapezoid width
+
+    //gsap
+    
+    const trapezoid = () =>{
+      gsap.fromTo('.trapezoid', {
+        scaleX: 0
+      }, {
+          duration: 1,
+          scaleX: 1
+      });
+      gsap.fromTo('.loginBox', {
+          // yParcant: 40,
+          opacity: 0
+      }, {
+          duration: 1,
+          delay: 1.3,
+          // yParcant: -50,
+          opacity: 1
+      });
+      gsap.fromTo('.title', {
+          x: -200,
+          opacity: 0
+      }, {
+          duration: 1,
+          delay: 1,
+          x: 0,
+          opacity: 1
+      });
+    }
+
+    const closeLogin = ()=>{
+      gsap.fromTo('.trapezoid', {
+        scaleX: 1
+      }, {
+          duration: 1,
+          scaleX: 2.2
+      });
+    }
+    onMounted(()=>{
+      trapezoid();
+    })
+    
     //pinia state
-    const login = loginStore() 
+    const login = loginStore();
 
     //delay
     function delay(t:number) {
       return new Promise((resolve, reject)=> {
         console.log(t);
-        setTimeout(() => {
-        }, t);
+        // setTimeout(() => {
+        // }, t);
+        setTimeout(resolve,t); 
       });
     }
 
@@ -93,6 +140,16 @@ export default defineComponent({
     
     //submit動畫
     const loginAnimation = ref('none');
+    
+    //登入錯誤訊息
+    const openNotification = (placement: NotificationPlacement,sysCode:any,responseMessage:any) => {      
+      notification['error']({
+        message: `登入失敗 syscode:${sysCode}`,
+        description:
+          `${responseMessage}`,
+        placement,
+      });
+    };
 
     const onFinish = (values: any) => { 
       console.log('Success:', values);  
@@ -100,16 +157,29 @@ export default defineComponent({
       loginLoading.value = true;
       loginAnimation.value = 'block';
 
-
-      login.fetchLogin(values)
+      //尚未選擇時區 固定為8
+      let offset:number = 8;
+      const submitValues = {
+        text_Id_value:values.text_Id_value,
+        text_Password_value:values.text_Password_value,
+        offset
+      }
+         
+      login.fetchLogin(submitValues)
       .then((data)=>{
-        utils.setCookie('login',10,30)
-        console.log('yes',data)
-        goMainRoute();
+        // utils.setCookie('login',10,30)
         // console.log('cookie',document.cookie);
+        closeLogin();
+        return delay(1000)
       })
-      .catch(()=>{
-         console.log('err')
+      .then(()=>{
+        console.log('go');
+        // window.sessionStorage.fromlogin = true;
+        goMainRoute();
+      })
+      .catch((data)=>{
+         console.log('err',data)
+         openNotification('top',data.sysCode,data.message.responseMessage);
       })
       .finally(()=>{  
         setTimeout(() => {
@@ -132,7 +202,7 @@ export default defineComponent({
       onFinishFailed,
       goMainRoute,
       loginLoading,
-      loginAnimation
+      loginAnimation,
     };
   },
 });
@@ -144,6 +214,7 @@ export default defineComponent({
 //   background-color: #0b1746;
 // }
 * {
+  margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
@@ -161,14 +232,41 @@ $clickBtn:v-bind(loginAnimation);
   min-height: 100vh;
   background-color:#1e2853;
   // width: 100%;
+  height: 100vh;
+  
+  .title {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    font-size: 1.6rem;
+    color: #EEE;
+    text-decoration: none;
+    text-transform: uppercase;
+    /*英文字體大小寫*/
+    letter-spacing: 1px;
+    outline: 2px solid #eee;
+    padding: 0rem 1.5rem;
 
+  }
+  .trapezoid {
+      width: 60%;
+      height: inherit;
+      background-color: #eee;
+      position: absolute;
+      top: 0;
+      right: 0;
+      clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%);
+      transform-origin: right;
+      z-index: 10;
+  }
   .loginBox {
-     background-color: white;
+      background-color: white;
       box-shadow: 2px 2px 4px #292828;
-      max-width: 1000px;
+      max-width: 400px;
       border-radius: 20px;
       height: 500px;
       width: 90%;
+      z-index:100;
       
 
       @media screen and (min-width: 992px) {
@@ -176,52 +274,15 @@ $clickBtn:v-bind(loginAnimation);
         width: 100%;
       }
 
-    
-    .colTitle {
-      background-color:$loading;
-      border-radius: 20px 20px 0px 0px;
+    .colFrom {
       display: flex;
       justify-content: center;
       align-items: center;
-      // font-size: 100px;
-      // font-family: fantasy;
-      width: 100%;
-      height: 50%;
-      overflow: hidden;
-
-      @media screen and (min-width: 992px) {
-        border-radius: 20px 0px 0px 20px;
-        width: 50%;
-        // padding: 100px 0px;
-        height: 100%;
-      }
-      // .title {
-      // display: flex;
-    
-      // }
-      .titleImg {
-        height: 100%;
-        min-width: 100%;
-        // color: white;
-        // font-size: px2vmin(60);
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-position-x: center;
-        background-image: url("https://picsum.photos/1000/1000");
-      }
-    }
-    .colFrom {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 50%;
+      height: 100%;
 
         @media screen and (min-width: 992px) {
-          width: 50%;
-          padding: 100px 0px;
-          height: 100%;
-  
+          width: 100%;
+          // padding: 100px 0px;
         }
       }
       .loginFrom {
