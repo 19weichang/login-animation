@@ -1,7 +1,7 @@
-const login = require('./login');
+const user = require('./user');
 
 const routesRequire = [
-  login,
+  user,
 ];
 
 module.exports = {

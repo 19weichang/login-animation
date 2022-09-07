@@ -1,9 +1,9 @@
 
 import { defineStore } from 'pinia'
-import api from '../api/login'
+import api from '../api/user'
 
 export const loginStore = defineStore({
-  id:'login',//必填 唯一
+  id:'user',//必填 唯一
   state: () =>{
    return{
     loginData:'welcome'

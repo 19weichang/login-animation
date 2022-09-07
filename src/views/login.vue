@@ -50,7 +50,7 @@
 </template>
 <script lang="ts">
 import { onMounted,defineComponent, reactive, ref,inject} from 'vue';
-import { loginStore } from '../store/login'
+import { loginStore } from '../store/user'
 import { useRouter, useRoute } from "vue-router";
 // import utils from '../cookie/utils'
 import { notification } from 'ant-design-vue';
