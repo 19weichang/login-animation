@@ -1,4 +1,3 @@
-
 import { defineStore } from 'pinia'
 import api from '../api/user'
 
@@ -30,6 +29,27 @@ export const loginStore = defineStore({
           })
           .catch((err)=>{
             reject(err);
+          })
+      })
+    },
+    fetchLogout () {
+      return new Promise ((resolve, reject)=> {
+        api.getlogout()
+          .then((data:any)=>{
+            console.log(data);
+            let {sysCode, detail}  = data;
+            switch (sysCode) {
+              case 0: {
+                resolve(data);
+                break;
+              }
+              default: {
+                reject({ sysCode, message: detail.responseMessage });
+              }
+            }
+          })
+          .catch((err)=>{
+            console.log(err);
           })
       })
     }

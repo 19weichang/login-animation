@@ -10,8 +10,17 @@ export function getlogin (values:any) {
   };
   console.log('props',props)
   return request(props);
+};
+
+export function getlogout () {
+ let props = {
+   method:'get',
+   path:'/logout.do'
+ }
+ return request(props);
 }
 
 export default {
-  getlogin
+  getlogin,
+  getlogout
 }

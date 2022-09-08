@@ -13,16 +13,19 @@
 
     </div>
     <div class="navList" id="navList">
-      <div class="options">
-        <navbarList></navbarList>
+      <div class="navbarList">
+        <ul>
+          <Logout/>
+          <TimeRange/>
+        </ul>
       </div>
     </div>
   </div>
-  
 </template>
 <script setup lang="ts">
-import navbarList from './navbarList.vue';
-import { defineComponent,ref } from 'vue'
+import Logout from '../components/navbarOptions/logout.vue'
+import TimeRange from '../components/navbarOptions/timeRange.vue'
+import { defineComponent,ref } from 'vue';
 import {
   UserOutlined,
 } from '@ant-design/icons-vue';
@@ -159,20 +162,28 @@ $afterTransform:v-bind(afterTransform);
     top: 0;
     right: 0;
     background-color: #eee;
-    // transform: translateX(100%);
     transform:$clickBtnMedia;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
     box-shadow: -.5rem 0 1rem rgba(0, 0, 0, 0.1);
     z-index: 1500;
     transition: transform 1s;
+    font-size: 1.5rem;
 
-    .options {
-      position: absolute;
-      top: 0;
-      left: 0;
+    .navbarList {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+        ul {
+          padding-top: 70px;
+          position: absolute;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+
+          @media screen and (min-width: 992px) {
+            width: 30%;
+          }
+        }
     }
 
     @media screen and (min-width: 992px) {

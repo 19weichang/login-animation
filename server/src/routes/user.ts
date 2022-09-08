@@ -73,13 +73,13 @@ module.exports = {
 
       let isServerError = Math.random() > (0 || 0.96);
       let sysCode = (isServerError
-        ? oneOf(oneOf(['9', '15', '500']))
+        ? oneOf(['9', '15', '500'])
         : Verify(req.body) ? 0 : 3
       );
       let message  = Responses.find(response => {
         return response.sysCode === sysCode;
       });
-      let responseMessage = message
+      let responseMessage = message;
 
       // Status.isLogin = sysCode === 0;
       
@@ -93,5 +93,29 @@ module.exports = {
         });
       }, Math.random() * 3 * 1000);
     });
+    app.get('/logout.do',(req:any,res:any) => {
+      console.log('logout',req.body);
+      let isServerError = Math.random() < (0 || 0.1);
+      // let isServerError = true;
+      let sysCode = (isServerError
+        ? (Math.random() < 0.75 ? 9 : 500)
+        : 0
+      );
+      let message = Responses.find(response => {
+        return response.sysCode === sysCode;
+      });
+      let responseMessage = message;
+      console.log('isServerError',isServerError,'sysCode',sysCode,responseMessage);
+      
+      setTimeout(() => {
+        res.json({
+          sysCode,
+          detail: {
+            responseMessage,
+            // responseData
+          }
+        });
+      }, Math.random() * 3 * 1000);
+    })
   }
 }

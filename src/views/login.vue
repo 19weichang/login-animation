@@ -170,7 +170,7 @@ export default defineComponent({
         // utils.setCookie('login',10,30)
         // console.log('cookie',document.cookie);
         closeLogin();
-        return delay(1000)
+        return delay(1000);
       })
       .then(()=>{
         console.log('go');
@@ -332,13 +332,6 @@ $clickBtn:v-bind(loginAnimation);
           background-color: red;
           background:linear-gradient(
             52deg,
-            // $loading  0%,$loading 20%,
-            // $loading2 20%,$loading2 45%,
-            // $loading 45%,$loading 70%,
-            // $loading2 70%,$loading2 95%,
-            // $loading 95%,$loading 100%
-            
-
             $loading  0%,$loading 15%,
             $loading2 15%,$loading2 30%,
             $loading 30%,$loading 45%,
